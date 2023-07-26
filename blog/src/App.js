@@ -4,11 +4,12 @@ import { useState } from 'react';
 
 function App() {
   let [ title, setTitle ] = useState(['코디 컬러조합','데일리 코디','트렌드 아이템']);
-  let [ likeCnt, setLikeCnt ] = useState([0,1,0]);
+  let [ likeCnt, setLikeCnt ] = useState([0,1,5,11,15]);
   let [ modalOpen, setModalOpen ] = useState(false); //modal visible 상태 부여
   let [ clickIndex, setIndex ] = useState(0);
+  let [ inputState, setInput ] = useState('');
   /** 
-   *  << destructuring 문법 >>
+   *  << Destructuring 문법 >>
    *  ['stateName', function()] = useState('임시로 저장할 값 ') 
    *  fx()는 생략해도 무관함.
   */
@@ -22,6 +23,22 @@ function App() {
     likeCnt[i] += 1;
     let copyLike = [...likeCnt];
 
+    setLikeCnt(copyLike)
+  }
+
+  function pushInput(){
+    let copyTitle = [...title]
+    copyTitle.unshift(inputState);
+    setTitle(copyTitle)
+  }
+
+  function deleteTitle(i){
+    let copyTitle = [...title];
+    let copyLike = [...likeCnt];
+    copyTitle.splice(i,1);
+    setTitle(copyTitle);
+    
+    copyLike.splice(i,1);
     setLikeCnt(copyLike)
   }
   
@@ -45,17 +62,19 @@ function App() {
                }
               > 
                 { t }
-                <span className='likeBtn' onClick={ ()=>{clickLike(i) }}>👍</span> {likeCnt[i]} 
+                <span className='likeBtn' onClick={ (e)=>{ e.stopPropagation(); clickLike(i); }}>👍</span> {likeCnt[i]} 
               </h4>
               <p>발행일 : 7월 25일</p>
+              <button onClick={ ()=>{ deleteTitle(i) }}>삭제</button>
             </div>
           )
         })
-
       }
+
+      <input onChange={(e)=>{setInput(e.target.value)}}/>
+      <button onClick={ pushInput } >작성</button>
+
       { modalOpen === true ? <Modal pTitle = {title} i={clickIndex} color="lightyellow" /> : null }      
-
-
     </div>
   );
 } /** APP */
